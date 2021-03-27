@@ -1,0 +1,61 @@
+{% extends 'finances/base.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <h1>My Banks</h1>
+        <a class="btn waves-effect right" href="{% url 'add' %}">
+            <i class="material-icons white-text left">add_circles</i>
+            Add Bank
+        </a>
+    </div>
+    <hr>
+
+    <div class="row">
+        {% for bank in bank_list %}
+        <div class="col s12 l3">
+            <div class="card-panel">
+                <h5>{{ bank.name }}</h5>
+                <a href="{% url 'finance_info' bank.slug %}" class="btn">Visit</a>
+                <a class="close-icon" onclick="deleteBank(this)" data-id="{{ bank.id }}">
+                    <i class="material-icons red-text right">close</i>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="noproject-wrapper center">
+            <h3 class="grey-text">Sorry, you don't have any banks connected yet.</h3>
+            <a href="" class="btn-large grey">
+                <i class="material-icons white-text left">add_circles</i>
+                <span class="bold">Add Banking Info</span>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    
+</div>
+
+<script>
+
+    function deleteBank(e) {
+
+        let id = e.dataset.id
+        //e.closest('div').remove()
+        e.closest('.col').remove()
+
+        fetch('', {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'id': id
+            }),
+            credentials: 'same-origin',
+        })
+    }
+
+</script>
+
+{% endblock %}
